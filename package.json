@@ -1,0 +1,16 @@
+{
+  "name": "note1995.io",
+  "version": "1.0.0",
+  "description": "个人笔记",
+  "main": "index.js",
+  "repository": "https://github.com/note1995/note1995.io",
+  "author": "chenxizhan",
+  "license": "GPLv2",
+  "scripts":{
+      "docs:dev": "vuepress dev docs",
+      "docs:build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.32"
+  }
+}
