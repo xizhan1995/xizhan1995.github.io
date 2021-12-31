@@ -1,14 +1,16 @@
 ---
 title: make 手册笔记/翻译
 ---
-
+# 目录
 <https://www.gnu.org/software/make/manual/make.html>
 [[TOC]]
 
 看标题，手册的前 10 章属于 Make 工具基础知识。
 第 16 章则是一些最佳实践。
 
-# 1. Overview
+# 1. 概览
+Overview
+
 make 工具可以自动确定一个大型程序中的哪些部分需要更新,并执行命令重新编译这些部分.
 本手册描述make工具的用法. make 由 Richard Stallman(理查德·斯托曼) 和
 Roland McGrath(罗兰·麦格拉思) 开发, 自 3.76 之后, 由 Paul D. Smith 开发.
@@ -1657,10 +1659,71 @@ MAKEFILES 变量会自动层层向内传递，所以可以通过设置此变量�
 sub-make 载入共同的 makefile。
 
 [5:v]: https://www.gnu.org/software/make/manual/make.html#Implicit-Variables Variables Used by Implicit Rules
-### 5.7.3 向子 make 传递选项  待续……
-基于变量导出机制，引入变量 MAKEFLAGS 做到。
+### 5.7.3 向子 make 传递选项
+总结:
+- 基于变量导出机制，借助变量 MAKEFLAGS 传递选项
+  - 上层make自动设置命令行选项到 MAKEFLAGS 中，sub-make 自动读取此变量中的选项，并与直接在命令行中指定的选项同等对待
+  - 命令手动指定的变量定义也是通过这个变量传递到 sub-make 中
+- 有些选项不予传递：-C -f -O -W
+- -j 选项控制并发作业的数量，对它做特殊处理，确保make和所有sub-make总的并发作业数量不超过 -j 指定的值
+- 附：手动清空 MAKEFLAGS 可以禁止选项传递，清空 MAKEOVERRIDES 可以禁止命令行变量定义传递，同时保留选项继续传递
+- 待续……
 Q. 像 MAKEFLAGS 这些变量都是正常的变量名，为什么 .SHELLFLAGS 却以句点开头？这样以句点开头的特殊地位的变量还有多少？
 
+诸如 -k、-s 之类的选项会通过变量 MAKEFLAGS 传递给 sub-make。make 会自动把接收到的命令行
+选项设置到变量 MAKEFLAGS 中，例如设 make -ks，则 MAKEFLAGS 会有值 ks。
+
+每个 sub-make 都有环境变量 MAKEFLAGS，sub-make 会查看此环境变量的值，分析其代表的
+命令行参数，通过此变量指定命令行选项与直接在命令行中指定的选项具备同等效果。
+
+于此相同，命令行中的变量定义也会通过 MAKEFLAGS 变量传递给 sub-make，sub-make 会把此
+变量中包含等号（=）的项解读为变量定义，和在命令行中定义变量效果等同。
+
+Q. 在shell中定义环境变量 MAKEFLAGS，对顶层make有效吗？
+
+make 不会把选项 -C -f -O -W 设置到变量 MAKEFLAGS 中，也就不会传递 sub-make。
+
+PS：试验了一下，手动把 -C 追加到 MAKEFLAGS 中，子 make 也会忽略他。
+PS：假设 MAKEFLAGS 变量不是给我们手动调用的，而仅是 make 和 sub-make 之间传递选项的
+    媒介，make 内部用的，那么： -f 指定 makefile 的路径，而一般递归make调用会指定自己
+    的makefile，所以不继承 -f 选项合理。
+
+-j 选项也特殊，如果 -j 后面明确指定了正整数 N，那么 make 和所有 sub-make 之间会互相
+协调，确保所有 make 进程总共只有 N 个作业同时运行。注意，make （和sub-make）进程自身不算作业，
+make 进程开启的执行作业（recipe）的子进程才算作业。
+
+如果操作系统不支持上述协商，make 就不会把 -j 选项设置到 MAKEFLAGS 中，从而 sub-make
+会顺序执行作业，如果把 -j 传递进入，每个 sub-make 都会有 N 个并发作业，最后并发作业
+的总数就会远超 N 个（所以此时不传递 -j 选项是合理的）。如果 -j 后面面没有给定数字，
+那么表示不限制并发数量，此时 make 会把 -j 通过 MAKEFLAGS 传递给 sub-make 进程。
+
+如果要禁止向 sub-make 传递选项，可以手动清空 MAKEFLAGS 变量。
+```makefile
+subsystem:
+    cd subdir && $(MAKE) MAKEFLAGS=
+```
+
+命令行中的变量定义实际在记录在变量 MAKEOVERRIDES 中，而 MAKEFLAGS 引用了这个变量，
+所以如果希望只向下传递选项，同时禁止传递变量定义，可以清空 MAKEOVERRIDES 变量。
+```makefile
+MAKEOVERRIDES=
+```
+当然这么做一般没有什么意义。有些系统对命令行长度有限制，在这些系统上可以通过这中方法
+缩短命令行长度。POSX 模式下（定义伪目标 `.POSIX:`），MAKEFLAGS 变量是不受
+MAKEOVERRIDES 的影响的。
+
+MAKEFLAGS 的前身是 MFLAGS，旧版本的make使用的是 MFLAGS，并且一般这么用
+```makefile
+subsystem:
+    cd subdir && $(MAKE) $(MFLAGS)
+```
+为保持兼容性，当前的 make 版本，也支持 MFLAGS 变量，它的值和 MAKEFLAGS 完全相同。
+如果希望 makefile 兼容旧版make，就可以用这个技术，这种方式，在新版make中完全可以
+正常运行。
+
+PS：新版 make 自动设置、自动读取 MAKEFLAGS 变量，更省事。
+
+…… 待续
 ### 5.7.4 --print-directory 选项
 默认不打印。使用 -C 选项时，递归调用时默认打印。使用 -w --print-directory 时打印；
 使用 --no-print-directory 禁止打印。
