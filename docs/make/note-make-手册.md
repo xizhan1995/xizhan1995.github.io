@@ -1,4 +1,9 @@
-https://www.gnu.org/software/make/manual/make.html
+---
+title: make 手册笔记/翻译
+---
+
+<https://www.gnu.org/software/make/manual/make.html>
+[[TOC]]
 
 看标题，手册的前 10 章属于 Make 工具基础知识。
 第 16 章则是一些最佳实践。
@@ -405,7 +410,9 @@ Ans：在 GNU Make 4.3 实测，不可以。会报错`Makefile:2: *** missing se
 另外，-include，当文件不存在时，不仅不报错，连警告都不会有。
 
 [How Makefiles Are Remade]: https://www.gnu.org/software/make/manual/make.html#Remaking-Makefiles "3.5 How Makefiles Are Remade"
-## 3.4 The Variable MAKEFILES
+## 3.4 变量 MAKEFILES
+The Variable MAKEFILES
+
 如果设置了环境变量 MAKEFILES ，make 先读取此变量中列出的 makefile 文件名（用空格分隔），在主makefile之前。
 对此变量中文件的处理类似 -include 指令，会搜索相关路径、文件缺失也不会报错。
 另外，make 不会从 MAKEFILES 指定的 makefile 以及它们包含的 makefile 计算 default goal。
@@ -439,7 +446,9 @@ MAKEFILES 一般用在递归调用 make 时。很少在调用顶级 makefile 的
 
 有些用户习惯在登录shell的启动脚本中配置此变量，这非常不好，因为写出来的makefile放在
 别人运行时就会报错，使用 include 指令明确被包含的makefile是更好的选择。
-## 3.5 How Makefiles Are Remade
+## 3.5 Remade 过程
+How Makefiles Are Remade
+
 有时可以从其它途径生成makefile，也希望make能用上最新的makefile。
 
 为了应对此需求，make 提供remake机制。当所有makefile都读取完毕后，make 尝试分别以每个
@@ -513,7 +522,7 @@ force: ;
 2. 用 force 作为 % 的 prerequisite，确保 % 必定执行（确保其不会因为存在同名文件而得不到执行）
 3. 为 force 提供了空的 recipe，避免 force 本身匹配到 % 规则，导致死循环。
 
-## 3.7 How make Reads a Makefile：两阶段
+## 3.7 读取makefile：两阶段
 How make Reads a Makefile
 
 make 分成两个阶段完成其工作。在第一个阶段，make 读取所有 makefile、被包含的makefile等，
@@ -585,11 +594,13 @@ immediate : immediate ; deferred
 也就是说，rule 中的 target 和 prerequisite 都是立即展开，而 recipe 总是延迟展开。
 explicit rules, pattern rules, suffix rules, static pattern rules, 和 simple prerequisite definitions 都是如此。
 
-## 3.8 How Makefiles Are Parsed
+## 3.8 解析Makefile
+How Makefiles Are Parsed
+
 make 逐行解析 makefile，步骤如下：
 1. 读取一个逻辑行
 2. 删除其中的注释
-3. 如果是 RECIPEPREFIX 开头且在 rule context 中，把当前行加入当前 recipe 中
+3. 如果是 RECIPEPREFIX 开头且在 rule context 中，把当前行加入当前 recipe 中；然后读取下一个逻辑行
 4. 检查其中的立即展开元素并展开
 5. 搜索行中的 : 和 = 分隔符，区分是规则定义还是变量赋值（原文是 macro assignment，我猜就是指变量定义）
 6. 处理下一行
@@ -632,7 +643,8 @@ myfile: $(ONEVAR) $$(TWOVAR)
 自动变量在 prerequisite 中是无法使用的，但借助二次展开就可以用上，只不过需要用 $$ 代替 $。
 ps：据文档所说，这正是二次展开的威力所在。但我目前不需要学这么深入，知道有这回事就行。
 
-# 4. Writing Rules
+# 4. 书写规则
+Writing Rules
 
 规则的 target、prerequisite、recipe。
 

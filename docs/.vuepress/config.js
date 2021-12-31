@@ -7,11 +7,18 @@ module.exports = {
     theme: '@vuepress/theme-default',
     themeConfig: {
         navbar:[
-            {
-                text: "home",
-                link: "/"
-            }
-        ]
+
+        ],
+        repo: "https://github.com/xizhan1995/xizhan1995.github.io"
     },
+    markdown:{
+
+        extractHeaders:{
+            level: [1,2,3]
+        },
+        toc: {
+            level: [1,2,3]
+        }
+    }
 
 }
