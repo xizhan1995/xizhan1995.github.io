@@ -542,3 +542,95 @@ web.test.log:
 ```
 make 收到 Ctrl-C （SIGINT）信号后会传递给正在执行的子shell，同时 make 自己也收到这个信号，
 make 会等待子shell执行完毕，然后做清理工作、再退出。
+
+### Q. (0001)手动指定的 MAKEFLAGS 变量中的选项是作为附加项还是覆盖其值呢？
+参见 3.7.3
+
+首先要看 MAKEFLAGS 变量的值是怎么来的，根据手册，应当是从命令行中提取的，并屏蔽了 CfOW 四个选项。
+可以验证一下：
+
+```makefile
+$(info :MAKEFLAGS=$(MAKEFLAGS):)
+
+main:
+        @echo :MAKEFLAGS=$$MAKEFLAGS:
+```
+有点意思哈，在MAKEFLAGS 中，
+- 有些选项带会带 -，有些不带
+- 有些会进入 make 变量 MAKEFLAGS 中，有些会进入recipe 子进程的环境变量 MAKEFLAGS 中
+- 变量定义，只会进入子进程的 MAKEFLAGS 环境变量中
+```bash
+$ make
+:MAKEFLAGS=:
+:MAKEFLAGS=:
+$ make -k
+:MAKEFLAGS=k:
+:MAKEFLAGS=k:
+$ make -j
+:MAKEFLAGS=:
+:MAKEFLAGS= -j:
+$ make -k -j
+:MAKEFLAGS=k:
+:MAKEFLAGS=k -j:
+$ make -j -k
+:MAKEFLAGS=k:
+:MAKEFLAGS=k -j:
+$ make -j -k -n
+:MAKEFLAGS=kn:
+echo :MAKEFLAGS=$MAKEFLAGS:
+```
+
+make 的命令行参数，从环境变量 MAKEFLAGS 和 命令行选项合并而来；然后据此生成make变量
+MAKEFLAGS 和传递给recipe子进程的 MAKEFLAGS 环境变量。
+```bash
+$ MAKEFLAGS="-k" make
+:MAKEFLAGS=k:
+:MAKEFLAGS=k:
+$ make -s
+:MAKEFLAGS=s:
+:MAKEFLAGS=s:
+$ make -j
+:MAKEFLAGS=:
+:MAKEFLAGS= -j:
+$ MAKEFLAGS="-k -j" make
+:MAKEFLAGS=k:
+:MAKEFLAGS=k -j:
+$ make -k -s -j
+:MAKEFLAGS=ks:
+:MAKEFLAGS=ks -j:
+$ MAKEFLAGS="-k FOO=bar" make
+:MAKEFLAGS=k:
+:MAKEFLAGS=k -- FOO=bar:
+$ MAKEFLAGS="-k FOO=bar" make -j
+:MAKEFLAGS=k:
+:MAKEFLAGS=k -j -- FOO=bar:
+```
+
+换一个 Makefile
+```makefile
+MAKEFLAGS=-k
+
+$(info :MAKEFLAGS=$(MAKEFLAGS):)
+
+main:
+        @echo :MAKEFLAGS=$$MAKEFLAGS:
+```
+如下表明，在makefile中设置变量MAKEFLAGS，类似于环境变量的 MAKEFLAGS，会与命令行选项
+合并。但当前 make 的MAKEFLAGS 不会反过来再受影响了。
+```bash
+$ make
+:MAKEFLAGS=-k:
+:MAKEFLAGS=k:
+$ make -j
+:MAKEFLAGS=-k:
+:MAKEFLAGS=k -j:
+$ make -s -k
+:MAKEFLAGS=-k:
+:MAKEFLAGS=ks:
+```
+
+总结，就是
+1. MAKEFLAGS 环境变量或者make中的MAKEFLAGS变量指定的选项，会附加到当前make的命令行选项列表中。
+  PS：同样，在 MAKEFLAGS 中指定的 CfOW 选项会被忽略
+  PS：如果设置了make变量MAKEFLAGS，当前make就不会根据最终命令行选项反过来更新当前的MAKEFLAGS变了；如果没有设置，就会反过来更新一波。
+2. 当make会把最终的命令行选项列表，中有意义的选项传递给执行 recipe 的子进程

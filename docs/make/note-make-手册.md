@@ -1664,10 +1664,10 @@ sub-make 载入共同的 makefile。
 - 基于变量导出机制，借助变量 MAKEFLAGS 传递选项
   - 上层make自动设置命令行选项到 MAKEFLAGS 中，sub-make 自动读取此变量中的选项，并与直接在命令行中指定的选项同等对待
   - 命令手动指定的变量定义也是通过这个变量传递到 sub-make 中
-- 有些选项不予传递：-C -f -O -W
+- 有些选项不予传递：-C -f -O -W；同样，sub-make 会忽略这四个选项，双重保障
 - -j 选项控制并发作业的数量，对它做特殊处理，确保make和所有sub-make总的并发作业数量不超过 -j 指定的值
 - 附：手动清空 MAKEFLAGS 可以禁止选项传递，清空 MAKEOVERRIDES 可以禁止命令行变量定义传递，同时保留选项继续传递
-- 待续……
+- 可以手动设置环境变量 MAKEFLAGS 或者在makefile中手动设置MAKEFLAGS变量，其指定的选项会附加到当前make进程的命令行选项列表中
 Q. 像 MAKEFLAGS 这些变量都是正常的变量名，为什么 .SHELLFLAGS 却以句点开头？这样以句点开头的特殊地位的变量还有多少？
 
 诸如 -k、-s 之类的选项会通过变量 MAKEFLAGS 传递给 sub-make。make 会自动把接收到的命令行
@@ -1680,6 +1680,9 @@ Q. 像 MAKEFLAGS 这些变量都是正常的变量名，为什么 .SHELLFLAGS �
 变量中包含等号（=）的项解读为变量定义，和在命令行中定义变量效果等同。
 
 Q. 在shell中定义环境变量 MAKEFLAGS，对顶层make有效吗？
+Ans：有
+
+---
 
 make 不会把选项 -C -f -O -W 设置到变量 MAKEFLAGS 中，也就不会传递 sub-make。
 
@@ -1723,7 +1726,19 @@ subsystem:
 
 PS：新版 make 自动设置、自动读取 MAKEFLAGS 变量，更省事。
 
-…… 待续
+如果某些选项需要每次调用 make 命令的时候都指定，比如 -k，可以设置环境变量 MAKEFLAGS
+或者直接在 makefile 中设置这个变量，这两处设置的选项都会附加到当前make命令的选项列表中。
+手动设置 MFLAGS 不起作用，此变量仅是为了兼容旧版 make，可读，但写入不生效。
+
+PS：如果设置了 make 变量MAKEFLAGS，当前make就不会根据最终命令行选项反过来更新当前的MAKEFLAGS变了；
+    如果没有设置，就会反过来更新一波。
+
+- Q. (0001)手动指定的 MAKEFLAGS 变量中的选项是作为附加项还是覆盖其值呢？
+Ans：作为附加选项。
+- Q. 如果在sub-make对应的makefile中设置MAKEFLAGS变量，会不会屏蔽掉上层make通过
+  MAKEFLAGS传递进来的选项？或者说，make 向sub-make传递选项，是通过MAKEFLAGS环境变量
+  还是通过make变量MAKEFLAGS？
+
 ### 5.7.4 --print-directory 选项
 默认不打印。使用 -C 选项时，递归调用时默认打印。使用 -w --print-directory 时打印；
 使用 --no-print-directory 禁止打印。
