@@ -463,7 +463,28 @@ make 输出的数据库信息带有行号，方便调试。
 ## 实验：makefile 中的工作目录
 1. make 变量 CURDIR 指向当前目录
 2. 除了 MAKEFILES 变量之外，第一个 makefile 所在的目录作是工作目录
+## -f 和 -C
+-f 不会改变工作目录，-C 则会。
+```makefile
+SHELL=bash
+$(info make: current dir is $(CURDIR))
+hello:
 
+> @echo current dir is $$(pwd)
+RECIPEPREFIX := >
+```
+
+```bash
+$ make -f sub/Makefile
+make: current dir is /home/xizhan/test
+current dir is /home/xizhan/test
+
+$ make -C sub -f Makefile
+make: Entering directory '/home/xizhan/test/sub'
+make: current dir is /home/xizhan/test/sub
+current dir is /home/xizhan/test/sub
+make: Leaving directory '/home/xizhan/test/sub'
+```
 ## Q&A
 
 - terminal 规则
