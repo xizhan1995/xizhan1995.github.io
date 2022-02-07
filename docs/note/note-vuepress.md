@@ -16,6 +16,47 @@ sidebarDepth 设置根据页面标题自动生成的侧边栏的最大深度。
 参考链接：
 - <https://v2.vuepress.vuejs.org/zh/reference/default-theme/config.html#sidebardepth>
 - [vuepress如何生成目录 | 全栈直通车-王世彪的博客](https://www.sofineday.com/vuepress-catalog.html#定义的位置)
+## 自定义容器
+
+Custom Containers
+
+Usage:
+```
+::: <type> [title]
+[content]
+:::
+```
+The type is required, and the title and content are optional.
+
+Supported type :
+
+- tip
+- warning
+- danger
+- details
+- Alias of CodeGroup and CodeGroupItem:
+  - code-group
+  - code-group-item
+
+示例
+```markdown
+::: tip
+This is a tip
+:::
+
+::: warning
+This is a warning
+:::
+
+::: danger
+This is a dangerous warning
+:::
+
+::: details
+This is a details block
+:::
+```
+这些 tip、warning、danger 都是有特殊背景色的。而 details 则是折叠效果。
 
 ## Q
 - 设置 lastUpdate 的显示格式：默认类似
