@@ -1,0 +1,42 @@
+import{e as n}from"./app.11a37516.js";import{_ as s}from"./plugin-vue_export-helper.21dcd24c.js";const a={},e=n(`<h1 id="python-\u5B9E\u9645\u6848\u4F8B" tabindex="-1"><a class="header-anchor" href="#python-\u5B9E\u9645\u6848\u4F8B" aria-hidden="true">#</a> python \u5B9E\u9645\u6848\u4F8B</h1><h2 id="\u8BFB\u53D6-excel" tabindex="-1"><a class="header-anchor" href="#\u8BFB\u53D6-excel" aria-hidden="true">#</a> \u8BFB\u53D6 Excel</h2><p>2022-02-07</p><p>\u4F7F\u7528 openpyxl \u8BFB\u53D6\u5355\u5143\u683C\u7684\u503C\uFF0C\u5982\u679C\u5355\u5143\u683C\u662F\u516C\u5F0F\uFF0C\u8BFB\u53D6\u5230\u7684\u4E5F\u662F\u516C\u5F0F\uFF0C\u800C\u4E0D\u662F\u516C\u5F0F\u7684\u8BA1\u7B97\u7ED3\u679C\u3002</p><details class="custom-container details"><summary>python \u4EE3\u7801\u7247\u6BB5</summary><div class="language-python ext-py line-numbers-mode"><pre class="language-python"><code><span class="token keyword">def</span> <span class="token function">f01</span><span class="token punctuation">(</span>inputs<span class="token punctuation">:</span> Sequence<span class="token punctuation">[</span>Str<span class="token punctuation">]</span><span class="token punctuation">,</span> output<span class="token punctuation">:</span> Str<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token boolean">None</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    \u63D0\u53D6\u5355\u65E5\u6570\u636E\uFF0C\u5408\u5E76\u5230\u4E00\u4E2A\u6587\u4EF6\u4E2D
+    &quot;&quot;&quot;</span>
+    <span class="token keyword">for</span> <span class="token builtin">input</span> <span class="token keyword">in</span> inputs<span class="token punctuation">:</span>
+        <span class="token comment"># \u6253\u5F00Excel\u6587\u4EF6</span>
+        wb <span class="token operator">=</span> openpyxl<span class="token punctuation">.</span>load_workbook<span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">)</span>
+        <span class="token comment"># \u53D6\u7B2C\u4E00\u4E2Asheet\u9875</span>
+        sh <span class="token operator">=</span> wb<span class="token punctuation">[</span><span class="token string">&quot;Sheet1&quot;</span><span class="token punctuation">]</span>
+        <span class="token comment"># \u8F7D\u5165\u8FD9\u4E00\u9875\u7684\u6570\u636E\uFF0C\u5E76\u9644\u52A0\u5230 data.rows \u4E0A\u9762</span>
+        rows <span class="token operator">=</span> load_sheet<span class="token punctuation">(</span>sh<span class="token punctuation">)</span>
+
+    <span class="token keyword">print</span><span class="token punctuation">(</span>rows<span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">load_sheet</span><span class="token punctuation">(</span>sh<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> List<span class="token punctuation">[</span>Row<span class="token punctuation">]</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot; \u8BFB\u53D6\u4E00\u5F20sheet\u9875\u5185\u7684\u6570\u636E
+    TODO: \u91D1\u989D\uFF0C\u9ED8\u8BA4\u7684\u6570\u636E\u7C7B\u578B\u7CBE\u5EA6\u591F\u5417\uFF1F
+    &quot;&quot;&quot;</span>
+
+    rows<span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> r <span class="token keyword">in</span> sh<span class="token punctuation">.</span>iter_rows<span class="token punctuation">(</span>min_row<span class="token operator">=</span><span class="token number">4</span><span class="token punctuation">,</span> max_row<span class="token operator">=</span><span class="token number">15</span><span class="token punctuation">,</span> max_col<span class="token operator">=</span><span class="token number">11</span><span class="token punctuation">,</span> values_only <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        row <span class="token operator">=</span> Row<span class="token punctuation">(</span><span class="token operator">*</span>r<span class="token punctuation">)</span>
+        rows<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> rows
+</code></pre><div class="line-numbers"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br></div></div></details><details class="custom-container details"><summary>\u547D\u4EE4\u884C</summary><div class="language-bash ext-sh line-numbers-mode"><pre class="language-bash"><code>$ python3 f01.py src.txt test.xlsx
+</code></pre><div class="line-numbers"><span class="line-number">1</span><br></div></div></details><details class="custom-container details"><summary>\u8F93\u51FA\u7ED3\u679C</summary><div class="language-text ext-text line-numbers-mode"><pre class="language-text"><code>&lt;
+  item_name=\u7535\u7968\u5176\u4ED6
+  count_day=184
+  count_month=1443
+  count_year=95241
+  count_last_year=93311
+  count_year_growth==(D14-E14)/E14
+  amount_day=0.9521458229
+  amount_month=5.770168254499997
+  amount_year=2527.8368459124013
+  amount_last_year=6688.756932915593
+  amount_year_growth==(I14-J14)/J14
+&gt;
+</code></pre><div class="line-numbers"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div></details><p>\u5982\u679C\u6211\u4EEC\u5E0C\u671B\u8BFB\u53D6\u5230\u516C\u5F0F\u8BA1\u7B97\u51FA\u6765\u7684\u7ED3\u679C\uFF0C\u53EF\u4EE5\u4F7F\u7528load_workbook()\u4E2D\u7684data_only\u5C5E\u6027\u3002 \u53E6\u5916\uFF0Cread_only\u7528\u4E8E\u6253\u5F00\u4E00\u4E2A\u5927\u7A7A\u95F4\u7684xlsx\u6587\u4EF6\u3002</p><ul><li>read_only (bool) \u2013 optimised for reading, content cannot be edited</li><li>data_only (bool) \u2013 controls whether cells with formulae have either the formula (default) or the value stored the last time Excel read the sheet</li></ul><p>\u628A\u6253\u5F00 Excel \u6587\u4EF6\u7684\u4EE3\u7801\u66F4\u6539\u4E3A\u5982\u4E0B\uFF1A\u6770\u514B</p><div class="language-python ext-py line-numbers-mode"><pre class="language-python"><code><span class="token comment"># \u6253\u5F00Excel\u6587\u4EF6</span>
+wb <span class="token operator">=</span> openpyxl<span class="token punctuation">.</span>load_workbook<span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">,</span> read_only<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> data_only<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+</code></pre><div class="line-numbers"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div>`,11);function p(t,o){return e}var r=s(a,[["render",p]]);export{r as default};
