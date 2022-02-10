@@ -1,8 +1,7 @@
 # python 实际案例
 ## 读取 Excel
 2022-02-07
-
-使用 openpyxl 读取单元格的值，如果单元格是公式，读取到的也是公式，而不是公式的计算结果。
+### 使用 openpyxl 读取单元格的值，如果单元格是公式，读取到的也是公式，而不是公式的计算结果。
 
 ::: details python 代码片段
 
@@ -65,3 +64,18 @@ $ python3 f01.py src.txt test.xlsx
 # 打开Excel文件
 wb = openpyxl.load_workbook(input, read_only=True, data_only=True)
 ```
+## 常见Excel库对比
+2022-02-09
+- xlwt xlrd：xlrd读取，xlwt写入，支持 97/2000/XP/2003 xls文件；
+- pandas   ：数据处理是 pandas 的立身之本，Excel 作为 pandas 输入/输出数据的容器。新建文档需要依赖其他库
+- openpyxl ：功能较强：一款比较综合的工具。支持读写Excel 2010文档，不支持更早版本。是理Excel复杂问题的首选库函数
+
+## openpyxl 库
+2022-02-08
+
+[openpyxl 3.0.9 documentation](https://openpyxl.readthedocs.io/en/stable/)
+[Python利用openpyxl来操作Excel（一） - 知乎](https://zhuanlan.zhihu.com/p/51292549)
+
+- workbook： 工作簿，一个excel文件包含多个sheet。
+- worksheet：工作表，一个workbook有多个，表名识别，如“sheet1”,“sheet2”等。
+- cell： 单元格，存储数据对象
