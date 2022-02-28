@@ -60,6 +60,21 @@ PS：作为惯例，标准库在标识符中使用ASCII字符，这是任何可�
 # -*- coding: cp1252 -*-
 ```
 
+根据 PEP-0263，Python 源码的默认编码是 UTF-8，如果源文件不是默认编码，可以在文件的第一行或第二行指定编码。
+常见的指定方式：
+```py
+# 这是直白的 python 方式
+#coding=<encoding name>
+
+# 这是流行的编辑器方式（可以同时被python解释器以及流行编辑器识别）
+#!/usr/bin/python
+# -*- coding: <encoding name> -*-
+
+#!/usr/bin/python
+# vim: set fileencoding=<encoding name> :
+```
+实际上，只要符合正则表达式 `^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)` ，就都是有效的。
+
 ### if语句：
 ```py
 >>> x = int(input("Please enter an integer: "))

@@ -1387,3 +1387,31 @@ TypeError: 'mappingproxy' object does not support item assignment
 >>> C.y=32
 >>> ^Z
 ```
+# vsocde 自定义模块路径跳转问题
+2022-02-28
+
+[彻底解决VScode中采用python import自定义模块显示unresolved import 问题 和 无法跳转到自定义模块函数定义](https://blog.csdn.net/fdd096030079/article/details/107763444)
+
+1. 在项目根目录下创建文件 .vscode/launch.json，如果有就直接使用。
+2. 编辑 lanunch.json，添加如下的 configurations.env 和 configuration.envFile 两个字段。
+```json
+{
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH":"${workspaceFolder}/src/main/py"
+            },
+            "envFile":"${workspaceFolder}/.env"
+        }
+    ]
+}
+```
+3. 在项目根目录下创建 .env 文件，写入一行：`PYTHONPATH=./src/main/py`
+4. 这里，./src/main/py 就是自定义模块所在路径，相对路径是相对于模块根目录的。
+
+另外，可能需要安装插件 Python extension for Visual Studio Code
